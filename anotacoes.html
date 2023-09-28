@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bloco de Notas</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Bloco de Notas</h1>
+            <div class="toolbar">
+                <button id="addNote">Adicionar Nota</button>
+                <button id="clearCanvas">Limpar Tela</button>
+            </div>
+            <div class="notes" id="notes"></div>
+            <canvas id="canvas" width="400" height="300"></canvas>
+        </div>
+        <style>
+            body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .toolbar {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .notes {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+            min-height: 100px;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+        }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            const addNoteButton = document.getElementById('addNote');
+            const clearCanvasButton = document.getElementById('clearCanvas');
+            const notesContainer = document.getElementById('notes');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            let notes = [];
+
+            // Carregar notas salvas na inicialização
+            const savedNotes = JSON.parse(localStorage.getItem('notes')) || [];
+
+            // Função para renderizar notas
+            function renderNotes() {
+                notesContainer.innerHTML = '';
+                savedNotes.forEach(function(note, index) {
+                    const div = document.createElement('div');
+                    div.classList.add('note');
+                    div.innerHTML = note;
+                    notesContainer.appendChild(div);
+                    notes.push({ text: note, id: index });
+                });
+            }
+
+            renderNotes();
+
+            // Evento para adicionar nota
+            addNoteButton.addEventListener('click', function() {
+                const noteText = prompt('Digite a nota:');
+                if (noteText) {
+                    notes.push({ text: noteText, id: notes.length });
+                    savedNotes.push(noteText);
+                    localStorage.setItem('notes', JSON.stringify(savedNotes));
+                    renderNotes();
+                }
+            });
+
+            // Evento para limpar o canvas
+            clearCanvasButton.addEventListener('click', function() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+
+            // Evento de clique em uma nota para excluir
+            notesContainer.addEventListener('click', function(event) {
+                if (event.target.classList.contains('note')) {
+                    const noteId = event.target.dataset.id;
+                    notes = notes.filter(note => note.id != noteId);
+                    savedNotes.splice(noteId, 1);
+                    localStorage.setItem('notes', JSON.stringify(savedNotes));
+                    renderNotes();
+                }
+            });
+
+            // Configuração do desenho no canvas
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            });
+
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mouseout', () => isDrawing = false);
+
+            function draw(e) {
+                if (!isDrawing) return;
+                ctx.lineWidth = 5;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000';
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            }
+        }); 
+        </script>
+    </body>
+</html>

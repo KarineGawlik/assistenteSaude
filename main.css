@@ -1,0 +1,91 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.time {
+    margin-bottom: 10px;
+}
+
+h1 {
+    margin: 0;
+}
+
+.app-icons {
+    display:grid;
+    grid-template-columns: 150px 150px 150px 150px 150px 150px 150px 150px;
+    justify-content: center;
+    margin: 10px;
+}
+
+.app-icon {
+    background-color: rgb(159, 236, 213);
+    border-radius: 10px;
+    padding: 4px;
+    margin: 4px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: #333;
+}
+
+.app-name {
+    font-weight: bolder;
+    margin-top: 20px;
+}
+
+.icone {
+    margin-bottom: 10px;
+}
+
+.app-name a {
+    color:#333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+#carouselExampleAutoplaying {
+    width: 90%;
+    margin-left: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.name {
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.address {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.date {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-size: 25px;
+}
+
+.time {
+    font-size: 60px;
+    background-color: #fff;
+    color: #333;
+    border-radius: 10px;
+}

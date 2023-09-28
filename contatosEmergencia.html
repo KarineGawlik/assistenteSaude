@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Contatos</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Agenda de Contatos</h1>
+        <form id="contact-form">
+            <input type="text" id="name" placeholder="Nome" required>
+            <input type="text" id="phone" placeholder="Telefone" required>
+            <button type="submit">Adicionar Contato</button>
+        </form>
+        <ul id="contact-list"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="text"] {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+button {
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+button.remove {
+    background-color: #333;
+}
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contact-form');
+    const contactList = document.getElementById('contact-list');
+
+    // Carregar contatos salvos na inicialização
+    const savedContacts = JSON.parse(localStorage.getItem('contacts')) || [];
+
+    // Função para renderizar a lista de contatos
+    function renderContacts() {
+        contactList.innerHTML = '';
+        savedContacts.forEach(function(contact, index) {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${contact.name} - ${contact.phone}</span>
+                <button class="remove" data-index="${index}">Remover</button>
+            `;
+            contactList.appendChild(li);
+        });
+    }
+
+    renderContacts();
+
+    // Função para adicionar um novo contato
+    contactForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        if (name && phone) {
+            savedContacts.push({ name, phone });
+            localStorage.setItem('contacts', JSON.stringify(savedContacts));
+            renderContacts();
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+        }
+    });
+
+    // Função para remover um contato
+    contactList.addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove')) {
+            const index = event.target.getAttribute('data-index');
+            savedContacts.splice(index, 1);
+            localStorage.setItem('contacts', JSON.stringify(savedContacts));
+            renderContacts();
+        }
+    });
+});
+</script>
+
+</html>

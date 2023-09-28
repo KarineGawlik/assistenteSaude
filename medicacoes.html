@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicações Diárias</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .form {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    input[type="text"] {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        flex-grow: 1;
+        margin-right: 10px;
+    }
+
+    button {
+        padding: 8px 16px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin-top: 20px;
+    }
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        border-bottom: 1px solid #ccc;
+    }
+
+    button.delete {
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>Medicações Diárias</h1>
+        <div class="form">
+            <input type="text" id="medicationName" placeholder="Nome da Medicação" required>
+            <input type="text" id="medicationDose" placeholder="Dose da Medicação" required>
+            <button id="addMedication">Adicionar Medicação</button>
+        </div>
+        <ul id="medicationList"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const medicationNameInput = document.getElementById('medicationName');
+    const medicationDoseInput = document.getElementById('medicationDose');
+    const addMedicationButton = document.getElementById('addMedication');
+    const medicationList = document.getElementById('medicationList');
+    let medications = JSON.parse(localStorage.getItem('medications')) || [];
+
+    function updateMedicationList() {
+        medicationList.innerHTML = '';
+        medications.forEach(function(medication, index) {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                <span>${medication.name} - ${medication.dose}</span>
+                <button class="delete">Excluir</button>
+            `;
+
+            const deleteButton = listItem.querySelector('.delete');
+            deleteButton.addEventListener('click', function() {
+                medications.splice(index, 1);
+                updateMedicationList();
+                saveMedicationsToLocal();
+            });
+
+            medicationList.appendChild(listItem);
+        });
+    }
+
+    function saveMedicationsToLocal() {
+        localStorage.setItem('medications', JSON.stringify(medications));
+    }
+
+    updateMedicationList();
+
+    addMedicationButton.addEventListener('click', function() {
+        const name = medicationNameInput.value.trim();
+        const dose = medicationDoseInput.value.trim();
+
+        if (name && dose) {
+            const medication = {
+                name,
+                dose
+            };
+
+            medications.push(medication);
+            updateMedicationList();
+            saveMedicationsToLocal();
+
+            medicationNameInput.value = '';
+            medicationDoseInput.value = '';
+        }
+    });
+});
+
+</script>
+
+</html>
